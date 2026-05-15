@@ -1,11 +1,12 @@
-//Функция для проверки длины строки.
-const checkStringLength = (string = '', maxSimbols = 1) => string.length <= maxSimbols;
-window.checkStringLength = checkStringLength;
+const isMeetingValid = (workStart, workEnd, meetingStart, meetingDuration) => {
+  const getMinutes = (time) => {
+    const [hours, minutes] = time.split(':');
+    return Number(hours) * 60 + Number(minutes);
+  };
 
-//Функция для проверки, является ли строка палиндромом.
-
-const isPalindrome = (string) => {
-  const normalizedString = string.replaceAll(' ', '').toLowerCase();
-  return normalizedString === normalizedString.split('').reverse().join('');
+  return (
+    getMinutes(meetingStart) >= getMinutes(workStart) &&
+    getMinutes(meetingStart) + meetingDuration <= getMinutes(workEnd)
+  );
 };
-window.isPalindrome = isPalindrome;
+export {isMeetingValid};
