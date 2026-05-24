@@ -1,5 +1,3 @@
-import {createArrayPictures} from './data.js';
-
-createArrayPictures();
+import './gallery.js';
 
 
