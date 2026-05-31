@@ -1,23 +1,25 @@
-import {createArrayPictures} from './data.js';
+import {fotos} from './data.js';
 
 const template = document.querySelector('#picture').content.querySelector('.picture');
-const container = document.querySelector('.pictures');
-const fotos = createArrayPictures();
+const containerFotosNode = document.querySelector('.pictures');
+const fragment = document.createDocumentFragment();
 
 const createFoto = (foto)=> {
-  const cloneTemplate = template.cloneNode(true);
-  const image = cloneTemplate.querySelector('.picture__img');
+  const cloneTemplateNode = template.cloneNode(true);
+  const image = cloneTemplateNode.querySelector('.picture__img');
   image.src = foto.url;
   image.alt = foto.description;
-  cloneTemplate.querySelector('.picture__likes').textContent = foto.likes;
-  cloneTemplate.querySelector('.picture__comments').textContent = foto.comments.length;
-  return cloneTemplate;
+  cloneTemplateNode.querySelector('.picture__likes').textContent = foto.likes;
+  cloneTemplateNode.querySelector('.picture__comments').textContent = foto.comments.length;
+  cloneTemplateNode.dataset.fotoId = foto.id;
+  return cloneTemplateNode;
 };
-const fragment = document.createDocumentFragment();
 
 fotos.forEach((foto) => {
   const cloneFoto = createFoto(foto);
   fragment.append(cloneFoto);
 });
 
-container.appendChild(fragment);
+containerFotosNode.appendChild(fragment);
+
+export {containerFotosNode};
