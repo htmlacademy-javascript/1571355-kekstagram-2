@@ -1,3 +1,2 @@
-import './gallery.js';
-
+import './render-foto.js';
 

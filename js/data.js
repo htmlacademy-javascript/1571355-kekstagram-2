@@ -93,4 +93,5 @@ const createArrayPictures = () =>
     createPictureItem(pictureIndex + 1)
   );
 
-export {createArrayPictures};
+const fotos = createArrayPictures();
+export {fotos};
