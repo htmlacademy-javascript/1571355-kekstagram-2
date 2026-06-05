@@ -1,5 +1,7 @@
 import {getRandomArrayItem, getRandomInteger} from './util.js';
 
+const RANGE_STEP = 5;
+
 const QUANTITY_PICTURES = 25;
 
 const comments = [
@@ -93,5 +95,5 @@ const createArrayPictures = () =>
     createPictureItem(pictureIndex + 1)
   );
 
-const fotos = createArrayPictures();
-export {fotos};
+
+export {createArrayPictures, RANGE_STEP };
