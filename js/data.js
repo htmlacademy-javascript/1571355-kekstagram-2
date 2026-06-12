@@ -1,5 +1,10 @@
 import {getRandomArrayItem, getRandomInteger} from './util.js';
 
+const MAX_HASHTAGS_COUNT = 5;
+const MAX_HASHTAG_LENGTH = 20;
+const MAX_COMMENT_LENGTH = 140;
+const HASHTAG_SYMBOLS_REGEXP = /^#[a-zа-яё0-9]+$/i;
+
 const RANGE_STEP = 5;
 
 const QUANTITY_PICTURES = 25;
@@ -96,4 +101,4 @@ const createArrayPictures = () =>
   );
 
 
-export {createArrayPictures, RANGE_STEP };
+export {createArrayPictures, RANGE_STEP, MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP };
