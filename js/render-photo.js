@@ -1,16 +1,12 @@
 import { containerPhotosElement } from './render-gallery.js';
-import { RANGE_STEP } from './data.js';
+import { clearComments, commentsLoaderElement, renderComments } from './render-comments.js';
 let currentQuantityComments = 0;
 let currentComments = [];
 
 const pictureElement = document.querySelector('.big-picture');
 const bigPictureImgElement = pictureElement.querySelector('.big-picture__img').querySelector('img');
 const likesCountElement = pictureElement.querySelector('.likes-count');
-const socialCommentsElement = pictureElement.querySelector('.social__comments');
-const socialCommentTemplate = socialCommentsElement.querySelector('.social__comment');
 const commentsCaptionElement = pictureElement.querySelector('.social__caption');
-const commentsCountElement = pictureElement.querySelector('.social__comment-count');
-const commentsLoaderElement = pictureElement.querySelector('.social__comments-loader');
 const pictureCancelElement = pictureElement.querySelector('.big-picture__cancel');
 
 const cancelClickPicture = () => {
@@ -35,30 +31,8 @@ const clickPicture = () => {
   commentsLoaderElement.addEventListener('click', onCommentsLoaderClick);
 };
 
-const renderComments = () => {
-  const commentsFragment = document.createDocumentFragment();
-  const quantityComments = currentComments.slice(currentQuantityComments, currentQuantityComments + RANGE_STEP);
-
-  quantityComments.forEach((comment) => {
-    const commentElement = socialCommentTemplate.cloneNode(true);
-
-    commentElement.querySelector('.social__picture').src = comment.avatar;
-    commentElement.querySelector('.social__picture').alt = comment.name;
-    commentElement.querySelector('.social__text').textContent = comment.message;
-
-    commentsFragment.appendChild(commentElement);
-  });
-
-  socialCommentsElement.appendChild(commentsFragment);
-  currentQuantityComments += quantityComments.length;
-
-  commentsCountElement.querySelector('.social__comment-shown-count').textContent = currentQuantityComments;
-  commentsCountElement.querySelector('.social__comment-total-count').textContent = currentComments.length;
-  commentsLoaderElement.classList.toggle('hidden', currentQuantityComments >= currentComments.length);
-};
-
 function onCommentsLoaderClick() {
-  renderComments();
+  currentQuantityComments = renderComments(currentComments, currentQuantityComments);
 }
 
 const openPicture = (photoId, photos) => {
@@ -70,11 +44,11 @@ const openPicture = (photoId, photos) => {
   bigPictureImgElement.src = currentPhoto.url;
   likesCountElement.textContent = currentPhoto.likes;
   commentsCaptionElement.textContent = currentPhoto.description;
-  socialCommentsElement.innerHTML = '';
+  clearComments();
   currentQuantityComments = 0;
   currentComments = currentPhoto.comments;
 
-  renderComments();
+  currentQuantityComments = renderComments(currentComments, currentQuantityComments);
 
   clickPicture();
 };
