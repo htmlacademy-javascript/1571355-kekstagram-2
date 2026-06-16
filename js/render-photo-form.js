@@ -1,4 +1,6 @@
-import {MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP } from './data.js';
+import {MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, RANGE_SCALE} from './data.js';
+
+let scale = 1;
 
 const uploadFormElement = document.querySelector('.img-upload__form');
 const pageBodyElement = document.querySelector('body');
@@ -10,12 +12,35 @@ const photoEditorResetBtnElement = uploadFormElement.querySelector('.img-upload_
 const hashtagInputElement = uploadFormElement.querySelector('.text__hashtags');
 const commentInputElement = uploadFormElement.querySelector('.text__description');
 
+const imgElement = uploadFormElement.querySelector('.img-upload__preview img');
+const scaleSmallerElement = uploadFormElement.querySelector('.scale__control--smaller');
+const scaleBiggerElement = uploadFormElement.querySelector('.scale__control--bigger');
+const scaleControlElement = uploadFormElement.querySelector('.scale__control--value');
+
+const onBiggerClick = () => {
+  if(scale < 1) {
+    scale += RANGE_SCALE;
+    imgElement.style.transform = `scale(${scale})`;
+    scaleControlElement.value = `${scale * 100}%`;
+  }
+};
+
+const onSmallerClick = () => {
+  if(scale > RANGE_SCALE) {
+    scale -= RANGE_SCALE;
+    imgElement.style.transform = `scale(${scale})`;
+    scaleControlElement.value = `${scale * 100}%`;
+  }
+};
+
 
 function closePhotoEditor () {
   photoEditorFormElement.classList.add('hidden');
   pageBodyElement.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
   photoEditorResetBtnElement.removeEventListener('click', onPhotoEditorResetBtnClick);
+  scaleBiggerElement.removeEventListener('click', onBiggerClick);
+  scaleSmallerElement.removeEventListener('click', onSmallerClick);
   uploadFileControlElement.value = '';
 }
 
@@ -32,12 +57,14 @@ function onDocumentKeydown (evt) {
     closePhotoEditor();
   }
 }
-const renderAdedPhotoForm = () => {
+const renderPhotoForm = () => {
   uploadFileControlElement.addEventListener('change', () => {
     photoEditorFormElement.classList.remove('hidden');
     pageBodyElement.classList.add('modal-open');
     photoEditorResetBtnElement.addEventListener('click', onPhotoEditorResetBtnClick);
     document.addEventListener('keydown', onDocumentKeydown);
+    scaleBiggerElement.addEventListener('click', onBiggerClick);
+    scaleSmallerElement.addEventListener('click', onSmallerClick);
   });
 };
 const pristine = new Pristine(uploadFormElement, {
@@ -119,5 +146,4 @@ uploadFormElement.addEventListener('submit', (evt) => {
   }
 });
 
-
-export { renderAdedPhotoForm };
+export { renderPhotoForm, uploadFormElement };
