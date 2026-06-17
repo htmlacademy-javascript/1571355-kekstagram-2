@@ -1,9 +1,61 @@
 import {getRandomArrayItem, getRandomInteger} from './util.js';
 
+const Effects = {
+  NONE: {
+    filter: () => '',
+    range: {min: 0, max: 1},
+    step: 0.1,
+    start: 1,
+    unit: '',
+    visible: false,
+  },
+  CHROME: {
+    filter: (value) => `grayscale(${value})`,
+    range: {min: 0, max: 1},
+    step: 0.1,
+    start: 1,
+    unit: '',
+    visible: true,
+  },
+  SEPIA: {
+    filter: (value) => `sepia(${value})`,
+    range: {min: 0, max: 1},
+    step: 0.1,
+    start: 1,
+    unit: '',
+    visible: true,
+  },
+  MARVIN: {
+    filter: (value) => `invert(${value}%)`,
+    range: {min: 0, max: 100},
+    step: 1,
+    start: 100,
+    unit: '%',
+    visible: true,
+  },
+  PHOBOS: {
+    filter: (value) => `blur(${value}px)`,
+    range: {min: 0, max: 3},
+    step: 0.1,
+    start: 3,
+    unit: 'px',
+    visible: true,
+  },
+  HEAT: {
+    filter: (value) => `brightness(${value})`,
+    range: {min: 1, max: 3},
+    step: 0.1,
+    start: 3,
+    unit: '',
+    visible: true,
+  },
+};
+
 const MAX_HASHTAGS_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
 const MAX_COMMENT_LENGTH = 140;
 const HASHTAG_SYMBOLS_REGEXP = /^#[a-zа-яё0-9]+$/i;
+const RANGE_SCALE = 0.25;
 
 const RANGE_STEP = 5;
 
@@ -101,4 +153,4 @@ const createArrayPictures = () =>
   );
 
 
-export {createArrayPictures, RANGE_STEP, MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP };
+export {createArrayPictures, RANGE_STEP, MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, Effects, RANGE_SCALE };
