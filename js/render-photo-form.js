@@ -1,5 +1,5 @@
 import {MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, RANGE_SCALE} from './data.js';
-
+import { renderSlider, destroySlider } from './render-slider.js';
 let scale = 1;
 
 const uploadFormElement = document.querySelector('.img-upload__form');
@@ -41,6 +41,7 @@ function closePhotoEditor () {
   photoEditorResetBtnElement.removeEventListener('click', onPhotoEditorResetBtnClick);
   scaleBiggerElement.removeEventListener('click', onBiggerClick);
   scaleSmallerElement.removeEventListener('click', onSmallerClick);
+  destroySlider();
   uploadFileControlElement.value = '';
 }
 
@@ -59,6 +60,7 @@ function onDocumentKeydown (evt) {
 }
 const renderPhotoForm = () => {
   uploadFileControlElement.addEventListener('change', () => {
+    renderSlider();
     photoEditorFormElement.classList.remove('hidden');
     pageBodyElement.classList.add('modal-open');
     photoEditorResetBtnElement.addEventListener('click', onPhotoEditorResetBtnClick);
@@ -146,4 +148,4 @@ uploadFormElement.addEventListener('submit', (evt) => {
   }
 });
 
-export { renderPhotoForm, uploadFormElement };
+export { renderPhotoForm };

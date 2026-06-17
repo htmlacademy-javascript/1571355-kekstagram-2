@@ -1,17 +1,20 @@
-import { uploadFormElement } from './render-photo-form.js';
-import { EFFECTS } from './data.js';
+import { Effects } from './data.js';
 
+
+const uploadFormElement = document.querySelector('.img-upload__form');
 const effectLevelElement = uploadFormElement.querySelector('.img-upload__effect-level');
 const effectValueElement = uploadFormElement.querySelector('.effect-level__value');
 const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
 const imgElement = uploadFormElement.querySelector('.img-upload__preview img');
 
+const getEffect = (effectName) => Effects[effectName.toUpperCase()];
+
 
 noUiSlider.create(sliderElement, {
-  start: EFFECTS.chrome.start,
+  start: Effects.CHROME.start,
   connect: 'lower',
-  range: EFFECTS.chrome.range,
-  step: EFFECTS.chrome.step,
+  range: Effects.CHROME.range,
+  step: Effects.CHROME.step,
   format: {
     to: (value) => value.toString(),
     from: (value) => parseFloat(value),
@@ -23,7 +26,7 @@ const updateEffectValue = (value) => {
 };
 
 const updateImageFilter = (effectName, value) => {
-  const effect = EFFECTS[effectName];
+  const effect = getEffect(effectName);
 
   if (!effect || effectName === 'none') {
     imgElement.style.filter = '';
@@ -34,7 +37,7 @@ const updateImageFilter = (effectName, value) => {
 };
 
 const updateSliderOptions = (effectName) => {
-  const effect = EFFECTS[effectName];
+  const effect = getEffect(effectName);
 
   sliderElement.noUiSlider.updateOptions({
     range: effect.range,
@@ -45,7 +48,7 @@ const updateSliderOptions = (effectName) => {
 };
 
 const setEffect = (effectName) => {
-  const effect = EFFECTS[effectName];
+  const effect = getEffect(effectName);
 
   if (!effect) {
     return;
@@ -78,12 +81,17 @@ const onEffectChange = (evt) => {
     setEffect(effectName);
   }
 };
-const renderEffectsSlider = () => {
+const renderSlider = () => {
   sliderElement.noUiSlider.on('update', onSliderUpdate);
   uploadFormElement.addEventListener('change', onEffectChange);
   setEffect('none');
 };
 
-export { renderEffectsSlider };
+const destroySlider = () => {
+  sliderElement.noUiSlider.off('update', onSliderUpdate);
+  uploadFormElement.removeEventListener('change', onEffectChange);
+};
+
+export { renderSlider, destroySlider };
 
 

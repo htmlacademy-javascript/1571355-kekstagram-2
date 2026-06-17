@@ -1,7 +1,7 @@
 import {getRandomArrayItem, getRandomInteger} from './util.js';
 
-const EFFECTS = {
-  none: {
+const Effects = {
+  NONE: {
     filter: () => '',
     range: {min: 0, max: 1},
     step: 0.1,
@@ -9,7 +9,7 @@ const EFFECTS = {
     unit: '',
     visible: false,
   },
-  chrome: {
+  CHROME: {
     filter: (value) => `grayscale(${value})`,
     range: {min: 0, max: 1},
     step: 0.1,
@@ -17,7 +17,7 @@ const EFFECTS = {
     unit: '',
     visible: true,
   },
-  sepia: {
+  SEPIA: {
     filter: (value) => `sepia(${value})`,
     range: {min: 0, max: 1},
     step: 0.1,
@@ -25,7 +25,7 @@ const EFFECTS = {
     unit: '',
     visible: true,
   },
-  marvin: {
+  MARVIN: {
     filter: (value) => `invert(${value}%)`,
     range: {min: 0, max: 100},
     step: 1,
@@ -33,7 +33,7 @@ const EFFECTS = {
     unit: '%',
     visible: true,
   },
-  phobos: {
+  PHOBOS: {
     filter: (value) => `blur(${value}px)`,
     range: {min: 0, max: 3},
     step: 0.1,
@@ -41,7 +41,7 @@ const EFFECTS = {
     unit: 'px',
     visible: true,
   },
-  heat: {
+  HEAT: {
     filter: (value) => `brightness(${value})`,
     range: {min: 1, max: 3},
     step: 0.1,
@@ -153,4 +153,4 @@ const createArrayPictures = () =>
   );
 
 
-export {createArrayPictures, RANGE_STEP, MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, EFFECTS, RANGE_SCALE };
+export {createArrayPictures, RANGE_STEP, MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, Effects, RANGE_SCALE };
