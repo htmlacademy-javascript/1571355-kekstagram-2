@@ -1,6 +1,7 @@
-import {MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, RANGE_SCALE} from './data.js';
+import { MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, RANGE_SCALE, DEFAULT_SCALE } from './data.js';
 import { renderSlider, destroySlider } from './render-slider.js';
-let scale = 1;
+
+let scale = DEFAULT_SCALE;
 
 const uploadFormElement = document.querySelector('.img-upload__form');
 const pageBodyElement = document.querySelector('body');
@@ -16,6 +17,10 @@ const imgElement = uploadFormElement.querySelector('.img-upload__preview img');
 const scaleSmallerElement = uploadFormElement.querySelector('.scale__control--smaller');
 const scaleBiggerElement = uploadFormElement.querySelector('.scale__control--bigger');
 const scaleControlElement = uploadFormElement.querySelector('.scale__control--value');
+const submitButtonElement = uploadFormElement.querySelector('.img-upload__submit');
+const effectNoneElement = uploadFormElement.querySelector('#effect-none');
+const successTemplateElement = document.querySelector('#success').content.querySelector('.success');
+const errorTemplateElement = document.querySelector('#error').content.querySelector('.error');
 
 const onBiggerClick = () => {
   if(scale < 1) {
@@ -46,10 +51,15 @@ function closePhotoEditor () {
 }
 
 function onPhotoEditorResetBtnClick () {
+  resetPhotoEditor();
   closePhotoEditor();
 }
 
 function onDocumentKeydown (evt) {
+  if (document.querySelector('.success, .error')) {
+    return;
+  }
+
   if (
     evt.key === 'Escape' &&
     document.activeElement !== hashtagInputElement &&
@@ -76,6 +86,65 @@ const pristine = new Pristine(uploadFormElement, {
 });
 
 const empty = (value) => value.trim().length === 0;
+
+const resetScale = () => {
+  scale = DEFAULT_SCALE;
+  imgElement.style.transform = `scale(${scale})`;
+  scaleControlElement.value = `${scale * 100}%`;
+};
+
+function resetPhotoEditor () {
+  uploadFormElement.reset();
+  resetScale();
+  effectNoneElement.dispatchEvent(new Event('change', { bubbles: true }));
+  pristine.reset();
+}
+
+const blockSubmitButton = () => {
+  submitButtonElement.disabled = true;
+};
+
+const unblockSubmitButton = () => {
+  submitButtonElement.disabled = false;
+};
+
+const sendFormData = (formData) => fetch(
+  uploadFormElement.action,
+  {
+    method: 'POST',
+    body: formData,
+  },
+);
+
+const showMessage = (templateElement, buttonClass, innerClass) => {
+  const messageElement = templateElement.cloneNode(true);
+  const messageButtonElement = messageElement.querySelector(buttonClass);
+
+  const closeMessage = () => {
+    messageElement.remove();
+    document.removeEventListener('keydown', onMessageKeydown);
+  };
+
+  function onMessageKeydown (evt) {
+    if (evt.key === 'Escape') {
+      closeMessage();
+    }
+  }
+
+  messageButtonElement.addEventListener('click', closeMessage);
+  messageElement.addEventListener('click', (evt) => {
+    if (!evt.target.closest(innerClass)) {
+      closeMessage();
+    }
+  });
+
+  document.addEventListener('keydown', onMessageKeydown);
+  document.body.append(messageElement);
+};
+
+const showSuccessMessage = () => showMessage(successTemplateElement, '.success__button', '.success__inner');
+const showErrorMessage = () => showMessage(errorTemplateElement, '.error__button', '.error__inner');
+
 
 pristine.addValidator(hashtagInputElement, (value) => {
   if (empty(value)) {
@@ -143,9 +212,26 @@ pristine.addValidator(hashtagInputElement, (value) => {
 pristine.addValidator(commentInputElement, (value) => value.length <= MAX_COMMENT_LENGTH, 'Длина комментария не может быть больше 140 символов');
 
 uploadFormElement.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
   if (!pristine.validate()) {
-    evt.preventDefault();
+    return;
   }
+
+  blockSubmitButton();
+
+  sendFormData(new FormData(evt.target))
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Не удалось отправить форму');
+      }
+
+      resetPhotoEditor();
+      closePhotoEditor();
+      showSuccessMessage();
+    })
+    .catch(showErrorMessage)
+    .finally(unblockSubmitButton);
 });
 
 export { renderPhotoForm };

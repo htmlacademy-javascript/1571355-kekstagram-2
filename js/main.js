@@ -1,10 +1,11 @@
-import { createArrayPictures } from './data.js';
 import { renderGallery } from './render-gallery.js';
 import { renderPhoto } from './render-photo.js';
-import { renderPhotoForm } from'./render-photo-form.js';
+import { renderPhotoForm } from './render-photo-form.js';
+import { getData } from './get-server-data.js';
 
-const dataPhotos = createArrayPictures();
+getData().then((dataPhotos) => {
+  renderGallery(dataPhotos);
+  renderPhoto(dataPhotos);
+});
 
-renderGallery(dataPhotos);
-renderPhoto(dataPhotos);
 renderPhotoForm();
