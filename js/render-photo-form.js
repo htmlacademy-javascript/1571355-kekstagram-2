@@ -1,5 +1,6 @@
-import { MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, RANGE_SCALE, DEFAULT_SCALE } from './data.js';
+import {DEFAULT_SCALE, MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, RANGE_SCALE} from './data.js';
 import { renderSlider, destroySlider } from './render-slider.js';
+import { sendData } from './api.js';
 
 let scale = DEFAULT_SCALE;
 
@@ -65,6 +66,7 @@ function onDocumentKeydown (evt) {
     document.activeElement !== hashtagInputElement &&
     document.activeElement !== commentInputElement
   ) {
+    resetPhotoEditor();
     closePhotoEditor();
   }
 }
@@ -95,9 +97,9 @@ const resetScale = () => {
 
 function resetPhotoEditor () {
   uploadFormElement.reset();
+  pristine.reset();
   resetScale();
   effectNoneElement.dispatchEvent(new Event('change', { bubbles: true }));
-  pristine.reset();
 }
 
 const blockSubmitButton = () => {
@@ -108,17 +110,9 @@ const unblockSubmitButton = () => {
   submitButtonElement.disabled = false;
 };
 
-const sendFormData = (formData) => fetch(
-  uploadFormElement.action,
-  {
-    method: 'POST',
-    body: formData,
-  },
-);
-
-const showMessage = (templateElement, buttonClass, innerClass) => {
+const showMessage = (templateElement, buttonSelector, innerSelector) => {
   const messageElement = templateElement.cloneNode(true);
-  const messageButtonElement = messageElement.querySelector(buttonClass);
+  const messageButtonElement = messageElement.querySelector(buttonSelector);
 
   const closeMessage = () => {
     messageElement.remove();
@@ -132,8 +126,9 @@ const showMessage = (templateElement, buttonClass, innerClass) => {
   }
 
   messageButtonElement.addEventListener('click', closeMessage);
+
   messageElement.addEventListener('click', (evt) => {
-    if (!evt.target.closest(innerClass)) {
+    if (!evt.target.closest(innerSelector)) {
       closeMessage();
     }
   });
@@ -144,7 +139,6 @@ const showMessage = (templateElement, buttonClass, innerClass) => {
 
 const showSuccessMessage = () => showMessage(successTemplateElement, '.success__button', '.success__inner');
 const showErrorMessage = () => showMessage(errorTemplateElement, '.error__button', '.error__inner');
-
 
 pristine.addValidator(hashtagInputElement, (value) => {
   if (empty(value)) {
@@ -220,12 +214,8 @@ uploadFormElement.addEventListener('submit', (evt) => {
 
   blockSubmitButton();
 
-  sendFormData(new FormData(evt.target))
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Не удалось отправить форму');
-      }
-
+  sendData(new FormData(evt.target))
+    .then(() => {
       resetPhotoEditor();
       closePhotoEditor();
       showSuccessMessage();

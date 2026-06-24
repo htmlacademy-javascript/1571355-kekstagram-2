@@ -57,6 +57,23 @@ const MAX_COMMENT_LENGTH = 140;
 const HASHTAG_SYMBOLS_REGEXP = /^#[a-zа-яё0-9]+$/i;
 const RANGE_SCALE = 0.25;
 const DEFAULT_SCALE = 1;
+const DATA_ERROR_SHOW_TIME = 5000;
+const BASE_URL = 'https://31.javascript.htmlacademy.pro/kekstagram';
+
+const Route = {
+  GET_DATA: '/data',
+  SEND_DATA: '',
+};
+
+const Method = {
+  GET: 'GET',
+  POST: 'POST',
+};
+
+const ErrorText = {
+  GET_DATA: 'Не удалось загрузить данные',
+  SEND_DATA: 'Не удалось отправить форму',
+};
 
 const RANGE_STEP = 5;
 
@@ -154,4 +171,4 @@ const createArrayPictures = () =>
   );
 
 
-export {createArrayPictures, RANGE_STEP, MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, Effects, RANGE_SCALE, DEFAULT_SCALE };
+export {createArrayPictures, RANGE_STEP, MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, Effects, RANGE_SCALE, DEFAULT_SCALE, DATA_ERROR_SHOW_TIME, BASE_URL, Route, Method, ErrorText };
