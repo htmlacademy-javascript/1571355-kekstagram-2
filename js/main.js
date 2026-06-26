@@ -1,10 +1,15 @@
-import { createArrayPictures } from './data.js';
+import { getData } from './api.js';
+import { DATA_ERROR_SHOW_TIME } from './data.js';
 import { renderGallery } from './render-gallery.js';
 import { renderPhoto } from './render-photo.js';
-import { renderPhotoForm } from'./render-photo-form.js';
+import { renderPhotoForm } from './render-photo-form.js';
+import { showDataErrorMessage } from './util.js';
 
-const dataPhotos = createArrayPictures();
+getData()
+  .then((dataPhotos) => {
+    renderGallery(dataPhotos);
+    renderPhoto(dataPhotos);
+  })
+  .catch(() => showDataErrorMessage(DATA_ERROR_SHOW_TIME));
 
-renderGallery(dataPhotos);
-renderPhoto(dataPhotos);
 renderPhotoForm();
