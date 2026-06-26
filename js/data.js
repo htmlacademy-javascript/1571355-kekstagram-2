@@ -79,6 +79,10 @@ const RANGE_STEP = 5;
 
 const QUANTITY_PICTURES = 25;
 
+const DEBOUNCE_DELAY = 500;
+const MAX_RANDOM_PHOTOS = 10;
+const ACTIVE = 'img-filters__button--active';
+
 const comments = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -171,4 +175,4 @@ const createArrayPictures = () =>
   );
 
 
-export {createArrayPictures, RANGE_STEP, MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, Effects, RANGE_SCALE, DEFAULT_SCALE, DATA_ERROR_SHOW_TIME, BASE_URL, Route, Method, ErrorText };
+export {createArrayPictures, RANGE_STEP, MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, Effects, RANGE_SCALE, DEFAULT_SCALE, DATA_ERROR_SHOW_TIME, BASE_URL, Route, Method, ErrorText, DEBOUNCE_DELAY, MAX_RANDOM_PHOTOS, ACTIVE };
