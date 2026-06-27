@@ -1,6 +1,5 @@
 const templateElement = document.querySelector('#picture').content.querySelector('.picture');
 const containerPhotosElement = document.querySelector('.pictures');
-const fragment = document.createDocumentFragment();
 
 const createPhoto = (photo) => {
   const cloneTemplateElement = templateElement.cloneNode(true);
@@ -14,6 +13,7 @@ const createPhoto = (photo) => {
 };
 
 const renderGallery = (photos) => {
+  const fragment = document.createDocumentFragment();
   photos.forEach((photo) => {
     const clonePhoto = createPhoto(photo);
     fragment.append(clonePhoto);
