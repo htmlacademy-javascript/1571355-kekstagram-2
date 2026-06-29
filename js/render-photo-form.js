@@ -1,8 +1,9 @@
-import {DEFAULT_SCALE, MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, RANGE_SCALE} from './data.js';
+import {DEFAULT_PREVIEW_SRC, DEFAULT_SCALE, FILE_TYPES, MAX_HASHTAGS_COUNT, MAX_HASHTAG_LENGTH, MAX_COMMENT_LENGTH, HASHTAG_SYMBOLS_REGEXP, RANGE_SCALE} from './data.js';
 import { renderSlider, destroySlider } from './render-slider.js';
 import { sendData } from './api.js';
 
 let scale = DEFAULT_SCALE;
+let uploadedPhotoUrl = '';
 
 const uploadFormElement = document.querySelector('.img-upload__form');
 const pageBodyElement = document.querySelector('body');
@@ -20,6 +21,7 @@ const scaleBiggerElement = uploadFormElement.querySelector('.scale__control--big
 const scaleControlElement = uploadFormElement.querySelector('.scale__control--value');
 const submitButtonElement = uploadFormElement.querySelector('.img-upload__submit');
 const effectNoneElement = uploadFormElement.querySelector('#effect-none');
+const effectsPreviewElements = uploadFormElement.querySelectorAll('.effects__preview');
 const successTemplateElement = document.querySelector('#success').content.querySelector('.success');
 const errorTemplateElement = document.querySelector('#error').content.querySelector('.error');
 
@@ -39,6 +41,27 @@ const onSmallerClick = () => {
   }
 };
 
+const updatePreview = (photoUrl) => {
+  imgElement.src = photoUrl;
+  effectsPreviewElements.forEach((previewElement) => {
+    previewElement.style.backgroundImage = `url("${photoUrl}")`;
+  });
+};
+
+const resetPreview = () => {
+  updatePreview(DEFAULT_PREVIEW_SRC);
+
+  if (uploadedPhotoUrl) {
+    URL.revokeObjectURL(uploadedPhotoUrl);
+    uploadedPhotoUrl = '';
+  }
+};
+
+const isValidPhoto = (file) => {
+  const fileName = file.name.toLowerCase();
+
+  return FILE_TYPES.some((type) => fileName.endsWith(type));
+};
 
 function closePhotoEditor () {
   photoEditorFormElement.classList.add('hidden');
@@ -49,6 +72,7 @@ function closePhotoEditor () {
   scaleSmallerElement.removeEventListener('click', onSmallerClick);
   destroySlider();
   uploadFileControlElement.value = '';
+  resetPreview();
 }
 
 function onPhotoEditorResetBtnClick () {
@@ -72,6 +96,19 @@ function onDocumentKeydown (evt) {
 }
 const renderPhotoForm = () => {
   uploadFileControlElement.addEventListener('change', () => {
+    const file = uploadFileControlElement.files[0];
+
+    if (!file || !isValidPhoto(file)) {
+      uploadFileControlElement.value = '';
+      return;
+    }
+
+    if (uploadedPhotoUrl) {
+      URL.revokeObjectURL(uploadedPhotoUrl);
+    }
+
+    uploadedPhotoUrl = URL.createObjectURL(file);
+    updatePreview(uploadedPhotoUrl);
     renderSlider();
     photoEditorFormElement.classList.remove('hidden');
     pageBodyElement.classList.add('modal-open');
